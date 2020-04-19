@@ -2,8 +2,34 @@ var mySQL = require('../lib/conexionbd');
 
 function peliculas(req, res) {
 
-    var querySQL='select * from pelicula';
-    mySQL.query(querySQL, function(error, resultado, fields) {
+    let anio=req.query.anio;
+    let titulo=req.query.titulo;
+    let genero_id=req.query.genero;
+    let columna_orden=req.querycolumna_orden;
+    let tipo_orden=req.query.tipo_orden;
+    let pagina=req.query.pagina;
+    let cantidad=req.query.cantidad;
+    let sql = 'select * from pelicula where 1 = 1';
+    let params = [];
+
+    if (anio > 0) {
+      sql += ' and anio = ?';
+      params.push(anio);
+    }
+    if (titulo) {
+      sql += ' and titulo like ?';
+      params.push(`%${titulo}%`);
+    }
+    if (genero_id > 0) {
+        sql += ' and genero_id = ?';
+        params.push(genero_id);
+    }
+
+    console.log(sql);
+    console.log(params);
+
+
+    mySQL.query(sql, params, function(error, resultado, fields) {
         if (error) {
             console.log("Hubo un error en la consulta", error.message);
             return res.status(404).send("Hubo un error en la consulta");
@@ -22,6 +48,7 @@ function peliculas(req, res) {
 function generos(req, res) {
 
     var querySQL='select * from genero';
+
     mySQL.query(querySQL, function(error, resultado, fields) {
         if (error) {
             console.log("Hubo un error en la consulta", error.message);
