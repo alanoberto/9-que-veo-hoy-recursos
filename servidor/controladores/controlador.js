@@ -5,12 +5,13 @@ function peliculas(req, res) {
     let anio=req.query.anio;
     let titulo=req.query.titulo;
     let genero_id=req.query.genero;
-    let columna_orden=req.querycolumna_orden;
+    let columna_orden=req.query.columna_orden;
     let tipo_orden=req.query.tipo_orden;
     let pagina=req.query.pagina;
     let cantidad=req.query.cantidad;
     let sql = 'select * from pelicula where 1 = 1';
     let params = [];
+    console.log(columna_orden);
 
     if (anio > 0) {
       sql += ' and anio = ?';
@@ -23,6 +24,9 @@ function peliculas(req, res) {
     if (genero_id > 0) {
         sql += ' and genero_id = ?';
         params.push(genero_id);
+    }
+    if (columna_orden && tipo_orden) {
+        sql += ` order by ${columna_orden} ${tipo_orden}`;
     }
 
     console.log(sql);
