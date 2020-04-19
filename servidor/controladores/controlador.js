@@ -29,6 +29,12 @@ function peliculas(req, res) {
         sql += ` order by ${columna_orden} ${tipo_orden}`;
     }
 
+    if (pagina && cantidad) {
+        let offset=(cantidad*pagina) - cantidad;
+        sql += ` limit ${offset}, ${cantidad}`;
+    }
+
+
     console.log(sql);
     console.log(params);
 
