@@ -1,0 +1,17 @@
+{
+  "name": "que_veo_hoy",
+  "version": "1.0.0",
+  "description": "proyecto 9 de acamica",
+  "main": "servidor.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
