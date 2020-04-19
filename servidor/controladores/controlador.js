@@ -10,21 +10,36 @@ function peliculas(req, res) {
     let pagina=req.query.pagina;
     let cantidad=req.query.cantidad;
     let sql = 'select * from pelicula where 1 = 1';
+    let sqlSinLimit = 'select count(*) as total from pelicula where 1 = 1';
     let params = [];
-    console.log(columna_orden);
+    let totalResultadosQuery;
 
     if (anio > 0) {
       sql += ' and anio = ?';
+      sqlSinLimit += ' and anio = ?';
       params.push(anio);
     }
     if (titulo) {
       sql += ' and titulo like ?';
+      sqlSinLimit += ' and titulo like ?';
       params.push(`%${titulo}%`);
     }
     if (genero_id > 0) {
         sql += ' and genero_id = ?';
+        sqlSinLimit += ' and genero_id = ?';
         params.push(genero_id);
     }
+
+    mySQL.query(sqlSinLimit, params, function(error, resultado, fields) {
+        if (error) {
+            console.log("Hubo un error en la consulta", error.message);
+            return res.status(404).send("Hubo un error en la consulta");
+        }
+
+        totalResultadosQuery=resultado[0].total;
+
+    });//cierre query donde obtengo total de resultados
+
     if (columna_orden && tipo_orden) {
         sql += ` order by ${columna_orden} ${tipo_orden}`;
     }
@@ -34,11 +49,6 @@ function peliculas(req, res) {
         sql += ` limit ${offset}, ${cantidad}`;
     }
 
-
-    console.log(sql);
-    console.log(params);
-
-
     mySQL.query(sql, params, function(error, resultado, fields) {
         if (error) {
             console.log("Hubo un error en la consulta", error.message);
@@ -46,13 +56,14 @@ function peliculas(req, res) {
         }
 
         var response = {
-            'peliculas': resultado
+            'peliculas': resultado,
+            'total': totalResultadosQuery
         };
 
         res.send(JSON.stringify(response));
     });//cierre query de las peliculas
 
-}
+}//cierre de función peliculas
 
 
 function generos(req, res) {
