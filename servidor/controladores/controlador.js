@@ -89,8 +89,14 @@ function pelicupaPorId(req, res) {
     let idPelicula=req.params.idPelicula;
     let queryPelicula= `select * from pelicula where id = ${idPelicula}`;
     let queryRelacion= `select actor_id from actor_pelicula where pelicula_id = ${idPelicula}`;
-    let queryActor= `select * from pelicula where id = ${idPelicula}`;
-    console.log(idPelicula);
+    let queryActor= `select * from actor where 1=0`;
+    let queryGenero= `select * from genero where id=`;
+
+    let response={
+        'pelicula': 0,
+        'actores': 0,
+        'genero': 0,
+    }
 
     mySQL.query(queryPelicula, function (error, resultado, fields) {  
         
@@ -98,19 +104,53 @@ function pelicupaPorId(req, res) {
             console.log("Hubo un error en la consulta", error.message);
             return res.status(404).send("La pelicula no existe");
         }
-        console.log(resultado);
 
+        response.pelicula=resultado[0];
+        queryGenero+=resultado[0].genero_id;
+/////////////////////////////query para obtener actores////////////////////////////////////        
         mySQL.query(queryRelacion, function (error, resultado, fields) {  
 
             if(error){
                 console.log("Error buscando en la tabla de relaciones, la pelicula existe en la tabla pelicula pero no en la de relaciones, posible inconsistencia", error.message);
-                return res.status(404).send("Error inesperado en la consulta");
+                return res.status(500).send("Error inesperado en la consulta");
             }
 
-            console.log(resultado);
-            let listaDeActores = resultado.map(elemento => {return elemento.actor_id})
-            res.send(listaDeActores)
+            let listaDeActores = resultado.map(elemento => {
+                queryActor+= ` or id=${elemento.actor_id}`;
+                return elemento.actor_id})
+
+            mySQL.query(queryActor, function (error, resultado, fields) {
+
+                if(error){
+                    console.log("Error buscando en la tabla de relaciones, la pelicula existe en la tabla pelicula pero no en la de relaciones, posible inconsistencia", error.message);
+                    return res.status(500).send("Error inesperado en la consulta");
+                }
+
+                response.actores=resultado;
+                
+/////////////////////////////////query para obtener el genero/////////////////////////////////////////////////////////////
+                mySQL.query(queryGenero, function (error, resultado, fields) {
+
+                    if(error){
+                        console.log("Error buscando en la tabla de relaciones, la pelicula existe en la tabla pelicula pero no en la de relaciones, posible inconsistencia", error.message);
+                        return res.status(500).send("Error inesperado en la consulta");
+                    }
+        
+        
+                    response.genero=resultado[0].nombre;
+        
+                    console.log
+
+                    res.send(JSON.stringify(response))
+                })
+
+              })
+
+
         })
+
+
+
 
     })
 }
