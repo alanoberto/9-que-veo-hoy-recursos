@@ -85,7 +85,41 @@ function generos(req, res) {
 
 }
 
+function pelicupaPorId(req, res) {
+    let idPelicula=req.params.idPelicula;
+    let queryPelicula= `select * from pelicula where id = ${idPelicula}`;
+    let queryRelacion= `select actor_id from actor_pelicula where pelicula_id = ${idPelicula}`;
+    let queryActor= `select * from pelicula where id = ${idPelicula}`;
+    console.log(idPelicula);
+
+    mySQL.query(queryPelicula, function (error, resultado, fields) {  
+        
+        if(error){
+            console.log("Hubo un error en la consulta", error.message);
+            return res.status(404).send("La pelicula no existe");
+        }
+        console.log(resultado);
+
+        mySQL.query(queryRelacion, function (error, resultado, fields) {  
+
+            if(error){
+                console.log("Error buscando en la tabla de relaciones, la pelicula existe en la tabla pelicula pero no en la de relaciones, posible inconsistencia", error.message);
+                return res.status(404).send("Error inesperado en la consulta");
+            }
+
+            console.log(resultado);
+            let listaDeActores = resultado.map(elemento => {return elemento.actor_id})
+            res.send(listaDeActores)
+        })
+
+    })
+}
+
 module.exports = {
     peliculas: peliculas,
-    generos: generos
+    generos: generos,
+    pelicupaPorId: pelicupaPorId
 };
+
+
+
