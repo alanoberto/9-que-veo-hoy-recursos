@@ -1,3 +1,4 @@
+USE peliculas;
 INSERT INTO `pelicula` (`id`, `titulo`, `anio`, `duracion`, `director`, `fecha_lanzamiento`, `puntuacion`, `poster`, `trama`)
 VALUES
 	(1,'Narc',2002,105,'Joe Carnahan','2003-01-10',7,'https://images-na.ssl-images-amazon.com/images/M/MV5BYjVhMWI2ZjgtNzNiNy00Mjc2LTljZDQtNGYwMzYwMTlhZGFhXkEyXkFqcGdeQXVyNDk3NzU2MTQ@._V1_SX300.jpg','When the trail goes cold on a murder investigation of a policeman an undercover narcotics officer is lured back to the force to help solve the case.'),
