@@ -7,3 +7,4 @@ alter table pelicula add column genero_id INT(5) after trama;
 SOURCE C:/Users/Usuario1/Google Drive/Cursos/Full Stack/9-que-veo-hoy-recursos/scripts/script-paso-2-generos.sql;
 CREATE TABLE actor (id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,nombre VARCHAR(30));
 CREATE TABLE actor_pelicula (id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,actor_id INT(6),pelicula_id INT(6));
+source C:/Users/Usuario1/Google Drive/Cursos/Full Stack/9-que-veo-hoy-recursos/scripts/script-paso-3-actores.sql
