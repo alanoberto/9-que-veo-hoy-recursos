@@ -49,12 +49,12 @@ function ControladorRecomendaciones() {
         });
 
         $(".paso-2-links .pregunta").click(function() {
-            self.genero = $(this).attr("genero");
+            self.genero = $(this).attr("generoID");
             self.pedirRecomendacion();
         });
 
         $('.paso-2 select').change(function() {
-            self.genero = $(this).attr("genero");
+            self.genero = $(this).attr("generoID");
             self.pedirRecomendacion();
         });
 
