@@ -2,6 +2,7 @@ var mySQL = require('../lib/conexionbd');
 
 function peliculas(req, res) {
 
+    console.log("Entrando en función peliculas");
     let anio=req.query.anio;
     let titulo=req.query.titulo;
     let genero_id=req.query.genero;
@@ -68,6 +69,7 @@ function peliculas(req, res) {
 
 function generos(req, res) {
 
+    console.log("Entrando en función generos");
     var querySQL='select * from genero';
 
     mySQL.query(querySQL, function(error, resultado, fields) {
@@ -86,6 +88,8 @@ function generos(req, res) {
 }
 
 function pelicupaPorId(req, res) {
+
+    console.log("Entrando en función pelicupaPorId");
     let idPelicula=req.params.idPelicula;
     let queryPelicula= `select * from pelicula where id = ${idPelicula}`;
     let queryRelacion= `select actor_id from actor_pelicula where pelicula_id = ${idPelicula}`;
@@ -155,10 +159,56 @@ function pelicupaPorId(req, res) {
     })
 }
 
+
+function recomendacion(req, res) {
+
+    console.log("Entrando en función recomendacion");
+
+    let anio_inicio=req.query.anio_inicio;
+    let anio_fin=req.query.anio_fin;
+    let puntuacion=req.query.puntuacion;
+    let genero_id=req.query.genero;
+    var querySQL='select * from pelicula where 1 = 0';
+    var queryEjecutar='select * from pelicula where 1 = 1'; // por defecto esta query devuelve todas las peliculas, usada para opción "Cualquier" donde no se envía ni fecha ni puntaje 
+    let params = [];
+
+    if (anio_inicio > 0 && anio_fin > 0 && anio_inicio < anio_fin) {
+        querySQL += ` or (anio between ${anio_inicio} and ${anio_fin})`;
+        queryEjecutar=querySQL;
+      }
+
+    if(puntuacion > 0){
+        querySQL += ` or puntuacion >= ${puntuacion}`;
+        queryEjecutar=querySQL;
+    }
+      
+    if (genero_id > 0) {
+        queryEjecutar += ` and genero_id = ${genero_id}`;
+      }
+    console.log(queryEjecutar)
+
+    mySQL.query(queryEjecutar, function(error, resultado, fields) {
+        if (error) {
+            console.log("Hubo un error en la consulta", error.message);
+            return res.status(404).send("Hubo un error en la consulta");
+        }
+
+        var response = {
+            'peliculas': resultado
+        };
+
+        res.send(JSON.stringify(response));
+    });//cierre query de las peliculas
+
+}
+
+
+
 module.exports = {
     peliculas: peliculas,
     generos: generos,
-    pelicupaPorId: pelicupaPorId
+    pelicupaPorId: pelicupaPorId,
+    recomendacion: recomendacion
 };
 
 
